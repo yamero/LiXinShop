@@ -21,6 +21,7 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
+require('sweetalert');
 require('./components/SelectDistrict');
 require('./components/UserAddressesCreateAndEdit');
 
