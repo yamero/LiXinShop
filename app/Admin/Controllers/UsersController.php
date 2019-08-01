@@ -49,13 +49,13 @@ class UsersController extends AdminController
         $show = new Show(User::findOrFail($id));
 
         $show->field('id', 'Id');
-        $show->field('name', 'Name');
+        $show->field('name', '用户名');
         $show->field('email', '邮箱');
-        $show->field('email_verified_at', 'Email verified at');
-        $show->field('password', 'Password');
-        $show->field('remember_token', 'Remember token');
-        $show->field('created_at', 'Created at');
-        $show->field('updated_at', 'Updated at');
+        $show->field('email_verified_at', '邮箱认证')->as(function ($email_verified_at) {
+            return $email_verified_at ? '已认证' : '未认证';
+        });
+        $show->field('created_at', '注册时间');
+        $show->field('updated_at', '更新时间');
 
         return $show;
     }
