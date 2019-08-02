@@ -26,6 +26,10 @@ class ProductsController extends AdminController
     {
         $grid = new Grid(new Product);
 
+        $grid->filter(function ($filter) {
+            $filter->like('title', '商品名称')->placeholder('请输入搜索关键字');
+        });
+
         $grid->column('id', 'Id');
         $grid->column('title', '商品名称');
         $grid->column('on_sale', '是否上架')->display(function ($on_sale) {

@@ -64,15 +64,11 @@ body {
   margin-bottom: 100px;
   .pagination {
     margin-right: 5px;
-    li.active {
-      span.page-link {
-        background-color: #00b5ad;
-        border-color: #00b5ad;
-      }
-    }
-    a.page-link {
-      color: #00b5ad;
-    }
+  }
+  .search-form {
+    padding: 0 5px 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
   }
   .products-list {
     padding: 0 15px;

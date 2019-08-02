@@ -7,11 +7,38 @@ use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::query()->where('on_sale', true)->paginate(16);
+        $builder = Product::query()->where('on_sale', true);
+
+        if ($searchKeyword = $request->input('search', '')) {
+            $like = "%{$searchKeyword}%";
+            $builder->where(function ($query) use ($like) {
+                $query->where('title', 'like', $like)
+                    ->orWhere('description', 'like', $like)
+                    ->orWhereHas('skus', function ($query) use ($like) {
+                        $query->where('sku_title', 'like', $like)
+                            ->orWhere('sku_description', 'like', $like);
+                    });
+            });
+        }
+
+        if ($order = $request->input('order', '')) {
+            if (preg_match('/^(.+)_(asc|desc)$/', $order, $m)) {
+                if (in_array($m[1], ['price', 'sold_count', 'rating'])) {
+                    $builder->orderBy($m[1], $m[2]);
+                }
+            }
+        }
+
+        $products = $builder->paginate(16);
+
         return view('products.index', [
-            'products' =>  $products
+            'products' =>  $products,
+            'filters' => [
+                'search_keyword' => $searchKeyword,
+                'order' => $order
+            ]
         ]);
     }
 }
