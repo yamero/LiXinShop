@@ -46,7 +46,11 @@
                                 <span>件</span><span class="stock"></span>
                             </div>
                             <div class="buttons">
-                                <button class="btn btn-success btn-favor">❤ 收藏</button>
+                                @if($favorited)
+                                    <button class="btn btn-danger btn-disfavor">取消收藏</button>
+                                @else
+                                    <button class="btn btn-success btn-favor">❤ 收藏</button>
+                                @endif
                                 <button class="btn btn-primary btn-add-to-cart">加入购物车</button>
                             </div>
                         </div>
@@ -79,11 +83,44 @@
 @section('scriptsAfterJs')
     <script>
         $(document).ready(function () {
+
             $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
             $('.sku-btn').click(function () {
                 $('.product-info .price span').text($(this).data('price'));
                 $('.product-info .stock').text('库存：' + $(this).data('stock') + '件');
             });
+
+            $('.btn-favor').on('click', function () {
+                axios.post('{{ route('products.favor', ['product' => $product->id]) }}')
+                    .then(function (response) {
+                        swal(response.data.msg, '', 'success');
+                    }).catch(function (error) {
+                        if (error.response && error.response.status === 401) {
+                            swal('请先登录', '', 'error');
+                        } else if (error.response && error.response.data.msg) {
+                            swal(error.response.data.msg, '', 'error');
+                        }  else {
+                            swal('啊哦，系统出了点事故', '', 'error');
+                        }
+                });
+            });
+
+            $('.btn-disfavor').on('click', function () {
+                axios.delete('{{ route('products.disfavor', ['product' => $product->id]) }}')
+                    .then(function (response) {
+                        swal(response.data.msg, '', 'success');
+                        location.reload();
+                    }).catch(function (error) {
+                        if (error.response && error.response.status === 401) {
+                            swal('请先登录', '', 'error');
+                        } else if (error.response && error.response.data.msg) {
+                            swal(error.response.data.msg, '', 'error');
+                        }  else {
+                            swal('啊哦，系统出了点事故', '', 'error');
+                        }
+                });
+            });
+
         });
     </script>
 @endsection
