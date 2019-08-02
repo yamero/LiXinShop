@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use mysql_xdevapi\Exception;
 
 class ProductsController extends Controller
 {
+    /*
+     * 商品列表页
+     */
     public function index(Request $request)
     {
         $builder = Product::query()->where('on_sale', true);
@@ -40,5 +44,17 @@ class ProductsController extends Controller
                 'order' => $order
             ]
         ]);
+    }
+
+    /*
+     * 商品详情页
+     */
+    public function show(Product $product, Request $request)
+    {
+        if (!$product->on_sale) {
+            throw new Exception('抱歉，商品未上架，暂时无法购买');
+        }
+
+        return view('products.show', ['product' => $product]);
     }
 }
