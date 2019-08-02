@@ -47,4 +47,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany('App\Models\Product', 'user_favorite_products', 'user_id', 'product_id')
             ->withTimestamps()->orderByDesc('user_favorite_products.created_at');
     }
+
+    public function cartItems()
+    {
+        return $this->hasMany('App\Models\CartItem', 'user_id', 'id');
+    }
 }

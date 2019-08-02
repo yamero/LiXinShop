@@ -114,7 +114,7 @@
                         swal(response.data.msg, '', 'success')
                             .then(function () {
                                 location.reload();
-                            });
+                        });
                     }).catch(function (error) {
                         if (error.response && error.response.status === 401) {
                             swal('请先登录', '', 'error');
@@ -123,6 +123,32 @@
                         }  else {
                             swal('啊哦，系统出了点事故', '', 'error');
                         }
+                });
+            });
+
+            $('.btn-add-to-cart').on('click', function () {
+                axios.post('{{ route('cart.add') }}', {
+                    sku_id: $('label.active input[name=skus]').val(),
+                    amount: $('.cart_amount input').val()
+                }).then(function (response) {
+                    swal(response.data.msg, '', 'success');
+                }).catch(function (error) {
+                    if (error.response && error.response.status === 401) {
+                        swal('请先登录', '', 'error');
+                    } else if (error.response && error.response.status === 422) {
+                        var html = '<div>';
+                        _.each(error.response.data.errors, function (errors) {
+                            _.each(errors, function (error) {
+                                html += error+'<br>';
+                            })
+                        });
+                        html += '</div>';
+                        swal({content: $(html)[0], icon: 'error'})
+                    } else if (error.response && error.response.data.msg) {
+                        swal(error.response.data.msg, '', 'error');
+                    }  else {
+                        swal('啊哦，系统出了点事故', '', 'error');
+                    }
                 });
             });
 
