@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -19,5 +20,13 @@ class Product extends Model
     public function skus()
     {
         return $this->hasMany('App\Models\ProductSku', 'product_id','id');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if (Str::startsWith($this->image, ['http://', 'https://'])) {
+            return $this->image;
+        }
+        return "/uploads/{$this->image}";
     }
 }
