@@ -93,7 +93,10 @@
             $('.btn-favor').on('click', function () {
                 axios.post('{{ route('products.favor', ['product' => $product->id]) }}')
                     .then(function (response) {
-                        swal(response.data.msg, '', 'success');
+                        swal(response.data.msg, '', 'success')
+                            .then(function () {
+                                location.reload();
+                            });
                     }).catch(function (error) {
                         if (error.response && error.response.status === 401) {
                             swal('请先登录', '', 'error');
@@ -108,8 +111,10 @@
             $('.btn-disfavor').on('click', function () {
                 axios.delete('{{ route('products.disfavor', ['product' => $product->id]) }}')
                     .then(function (response) {
-                        swal(response.data.msg, '', 'success');
-                        location.reload();
+                        swal(response.data.msg, '', 'success')
+                            .then(function () {
+                                location.reload();
+                            });
                     }).catch(function (error) {
                         if (error.response && error.response.status === 401) {
                             swal('请先登录', '', 'error');

@@ -92,4 +92,16 @@ class ProductsController extends Controller
 
         return ['status' => 1, 'msg' => '已取消收藏'];
     }
+
+    /*
+     * 收藏商品列表
+     */
+    public function favorites(Request $request)
+    {
+        $products = $request->user()->favoriteProducts()->paginate(16);
+
+        return view('products.favorites', [
+            'products' => $products
+        ]);
+    }
 }
