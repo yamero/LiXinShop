@@ -32,9 +32,11 @@ class ProductsController extends AdminController
 
         $grid->column('id', 'Id');
         $grid->column('title', '商品名称');
-        $grid->column('on_sale', '是否上架')->display(function ($on_sale) {
-            return $on_sale ? '已上架' : '已下架';
-        });
+        $states = [
+            'on'  => ['value' => true, 'text' => '上架', 'color' => 'primary'],
+            'off' => ['value' => false, 'text' => '下架', 'color' => 'default'],
+        ];
+        $grid->column('on_sale', '是否上架')->switch($states);
         $grid->column('rating', '评分');
         $grid->column('sold_count', '销量');
         $grid->column('review_count', '评论数');
@@ -79,10 +81,14 @@ class ProductsController extends AdminController
         $form = new Form(new Product);
 
         $form->text('title', '商品名称')->rules('required');
-        $form->editor('description', '商品详情')->rules('required');
+        $form->ckeditor('description', '商品详情')->rules('required');
         $form->image('image', '商品封面图')->rules('required');
         $form->multipleImage('images', '商品相册')->removable();
-        $form->switch('on_sale', '是否上架')->default(1);
+        $states = [
+            'on'  => ['value' => true, 'text' => '上架', 'color' => 'primary'],
+            'off' => ['value' => false, 'text' => '下架', 'color' => 'default'],
+        ];
+        $form->switch('on_sale', '是否上架')->states($states)->default(1);
         $form->hasMany('skus', 'SKU 列表', function (Form\NestedForm $form) {
             $form->text('sku_title', 'SKU 名称')->rules('required');
             $form->text('sku_description', 'SKU 描述')->rules('required');
@@ -95,7 +101,7 @@ class ProductsController extends AdminController
 
         // 定义事件回调，当模型即将保存时会触发这个回调
         $form->saving(function (Form $form) {
-            $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
+            $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: $form->model()->price;
         });
 
 

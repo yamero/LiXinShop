@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use mysql_xdevapi\Exception;
 
 class ProductsController extends Controller
 {
@@ -52,7 +52,7 @@ class ProductsController extends Controller
     public function show(Product $product, Request $request)
     {
         if (!$product->on_sale) {
-            throw new Exception('抱歉，商品未上架，暂时无法购买');
+            throw new InvalidRequestException('抱歉，商品未上架，暂时无法购买');
         }
 
         return view('products.show', ['product' => $product]);
