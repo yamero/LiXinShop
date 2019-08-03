@@ -81,4 +81,16 @@ class OrdersController extends Controller
 
         return ['status' => 1, 'msg' => '订单提交成功'];
     }
+
+    /*
+     * 订单列表
+     */
+    public function index(Request $request)
+    {
+        $orders = $request->user()->orders()->orderByDesc('created_at')->paginate();
+
+        return view('orders.index', [
+            'orders' => $orders
+        ]);
+    }
 }

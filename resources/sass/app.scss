@@ -47,6 +47,9 @@ body {
   color: #ff9999;
 }
 
+/*
+底部相关
+ */
 .footer {
   position: absolute;
   bottom: 0;
@@ -70,6 +73,9 @@ body {
   }
 }
 
+/*
+商品列表、收藏列表相关
+ */
 .product-page, .products-favorites-page {
   margin-bottom: 100px;
   .pagination {
@@ -141,6 +147,9 @@ body {
 
 }
 
+/*
+商品详情相关
+ */
 .products-show-page {
   .cover {
     width: 100%;
@@ -261,6 +270,9 @@ body {
   }
 }
 
+/*
+购物车相关
+ */
 .cart-index-page {
   .product_list {
     .btn-remove {
@@ -309,6 +321,54 @@ body {
     input.amount {
       width: 60px;
       border-radius: 0 !important;
+    }
+  }
+}
+
+/*
+订单列表相关
+ */
+.orders-index-page {
+  .list-group-item {
+    font-size: 12px;
+    border: none;
+    padding: 0;
+    margin-bottom: 15px;
+    .panel {
+      margin: 0;
+      .card-body {
+        padding: 0;
+      }
+    }
+    .table {
+      margin: 0;
+      td[rowspan] {
+        border-left: 1px solid #ddd;
+      }
+    }
+    .product-info {
+      display: flex;
+      flex-direction: row;
+      .preview {
+        img {
+          max-width: 80px;
+          max-height: 80px;
+        }
+        border: 1px solid #eee;
+        margin-right: 5px;
+      }
+      .product-title, .sku-title {
+        display: block;
+      }
+      .product-title > a {
+        color: #3c3c3c;
+      }
+      .sku-title {
+        color: #9e9e9e;
+      }
+    }
+    .total-amount {
+      font-weight: bolder;
     }
   }
 }
