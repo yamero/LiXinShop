@@ -87,10 +87,25 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
-        $orders = $request->user()->orders()->orderByDesc('created_at')->paginate();
+        $orders = $request->user()->orders()->with([
+            'items.product',
+            'items.productSku'
+        ])->orderByDesc('created_at')->paginate();
 
         return view('orders.index', [
             'orders' => $orders
+        ]);
+    }
+
+    /*
+     * 订单详情
+     */
+    public function show(Order $order, Request $request)
+    {
+        $this->authorize('own', $order);
+
+        return view('orders.show', [
+            'order' => $order->load(['items.product', 'items.productSku'])
         ]);
     }
 }

@@ -162,7 +162,10 @@
 
                 axios.post('{{ route('orders.store') }}', req)
                     .then(function (response) {
-                        swal(response.data.msg, '', 'success');
+                        swal(response.data.msg, '', 'success')
+                            .then(function () {
+                                location.href = '{{ route('orders.index') }}';
+                            });
                     }).catch(function (error) {
 
                         if (error.response && error.response.status === 401) {

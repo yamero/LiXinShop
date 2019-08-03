@@ -42,11 +42,13 @@
                                                             <span class="sku-title">{{ $item->productSku->sku_title }}</span>
                                                         </div>
                                                     </td>
-                                                    <td class="sku-price text-center" width="14%">￥{{ $item->price }}</td>
-                                                    <td class="sku-amount text-center" width="8%">{{ $item->amount }}</td>
+                                                    <td class="sku-price text-center td-wv-center" width="14%">￥{{ $item->price }}</td>
+                                                    <td class="sku-amount text-center td-wv-center" width="8%">{{ $item->amount }}</td>
                                                     @if($index === 0)
-                                                        <td rowspan="{{ count($order->items) }}" class="text-center total-amount" width="14%">￥{{ $order->total_amount }}</td>
-                                                        <td rowspan="{{ count($order->items) }}" class="text-center" width="18%">
+                                                        <td rowspan="{{ count($order->items) }}" class="text-center total-amount td-wv-center" width="14%">
+                                                            ￥{{ $order->total_amount }}
+                                                        </td>
+                                                        <td rowspan="{{ count($order->items) }}" class="text-center td-wv-center" width="18%">
                                                             @if($order->paid_at)
                                                                 @if($order->refund_status === \App\Models\Order::REFUND_STATUS_PENDING)
                                                                     已支付
@@ -61,7 +63,9 @@
                                                                 否则订单将自动关闭
                                                             @endif
                                                         </td>
-                                                        <td rowspan="{{ count($order->items) }}" class="text-center" width="12%"><a class="btn btn-primary btn-sm view-order-detail" href="">查看订单</a></td>
+                                                        <td rowspan="{{ count($order->items) }}" class="text-center td-wv-center" width="12%">
+                                                            <a class="btn btn-primary btn-sm view-order-detail" href="{{ route('orders.show', ['order' => $order->id]) }}">查看订单</a>
+                                                        </td>
                                                     @endif
                                                 </tr>
                                             @endforeach

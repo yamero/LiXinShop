@@ -67,7 +67,7 @@
 @section('scriptsAfterJs')
     <script>
 
-        var filters = {!! json_encode($filters) !!};
+        var filters = @json($filters);
 
         $(document).ready(function () {
 
