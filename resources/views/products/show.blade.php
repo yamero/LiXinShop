@@ -166,7 +166,7 @@
                     } else if (error.response && error.response.data.msg) {
                         swal(error.response.data.msg, '', 'error');
                     }  else {
-                        swal('啊哦，系统出了点事故', '', 'error');
+                        swal('啊哦，系统好像出了点意外', '', 'error');
                     }
                 });
             });
