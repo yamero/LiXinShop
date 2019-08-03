@@ -5,16 +5,24 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddCardRequest;
 use App\Models\CartItem;
 use App\Models\ProductSku;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    protected $cartService;
+
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
     /*
      * 购物车列表
      */
     public function index(Request $request)
     {
-        $cartItems = $request->user()->cartItems()->with(['productSku.product'])->get();
+        $cartItems = $this->cartService->get();
         $addresses = $request->user()->addresses()->orderByDesc('last_used_at')->get();
 
         return view('cart.index', [
@@ -28,20 +36,10 @@ class CartController extends Controller
      */
     public function add(AddCardRequest $request)
     {
-        $user = $request->user();
         $skuId = $request->input('sku_id');
         $amount = $request->input('amount');
 
-        if ($cart = $user->cartItems()->where('product_sku_id', $skuId)->first()) { // 购物车已存在该商品
-            $cart->increment('amount', $amount);
-        } else { // 购物车不存在该商品
-            $cart = new CartItem(['amount' => $amount]);
-            $cart->user()->associate($user->id);
-            $cart->productSku()->associate($skuId);
-            $cart->save();
-        }
-
-        return ['status' => 1, 'msg' => '已添加至购物车'];
+        return $this->cartService->add($skuId, $amount);
     }
 
     /*
@@ -49,8 +47,6 @@ class CartController extends Controller
      */
     public function remove(ProductSku $sku, Request $request)
     {
-        $request->user()->cartItems()->where('product_sku_id', $sku->id)->delete();
-
-        return ['status' => 1, 'msg' => '移除成功'];
+        return $this->cartService->remove($sku->id);
     }
 }
