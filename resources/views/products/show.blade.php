@@ -84,12 +84,14 @@
     <script>
         $(document).ready(function () {
 
+            // 根据用户选择的sku，显示对应的价格与库存
             $('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
             $('.sku-btn').click(function () {
                 $('.product-info .price span').text($(this).data('price'));
                 $('.product-info .stock').text('库存：' + $(this).data('stock') + '件');
             });
 
+            // 收藏商品
             $('.btn-favor').on('click', function () {
                 axios.post('{{ route('products.favor', ['product' => $product->id]) }}')
                     .then(function (response) {
@@ -108,6 +110,7 @@
                 });
             });
 
+            // 取消商品收藏
             $('.btn-disfavor').on('click', function () {
                 axios.delete('{{ route('products.disfavor', ['product' => $product->id]) }}')
                     .then(function (response) {
@@ -126,12 +129,28 @@
                 });
             });
 
+            // 将商品加入购物车
             $('.btn-add-to-cart').on('click', function () {
                 axios.post('{{ route('cart.add') }}', {
                     sku_id: $('label.active input[name=skus]').val(),
                     amount: $('.cart_amount input').val()
                 }).then(function (response) {
-                    swal(response.data.msg, '', 'success');
+
+                    swal({
+                        title: "商品已加入购物车，要前往购物车吗？",
+                        icon: "success",
+                        buttons: ['再逛逛', '前往购物车'],
+                        dangerMode: true,
+                    }).then(function (willDelete) {
+
+                        if (!willDelete) {
+                            return;
+                        }
+
+                        location.href = '{{ route('cart.index') }}';
+
+                    });
+
                 }).catch(function (error) {
                     if (error.response && error.response.status === 401) {
                         swal('请先登录', '', 'error');
