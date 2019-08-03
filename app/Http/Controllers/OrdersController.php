@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\OrderRequest;
+use App\Jobs\CloseOrder;
 use App\Models\Order;
 use App\Models\ProductSku;
 use App\Models\UserAddress;
@@ -74,6 +75,9 @@ class OrdersController extends Controller
             return $order;
 
         });
+
+        // 将关闭订单任务加入队列
+        $this->dispatch(new CloseOrder($order, config('app.order_close_delay')));
 
         return ['status' => 1, 'msg' => '订单提交成功'];
     }
