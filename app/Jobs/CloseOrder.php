@@ -1,4 +1,8 @@
 <?php
+/**
+ * 关闭订单队列任务
+ * 延时执行
+ */
 
 namespace App\Jobs;
 
