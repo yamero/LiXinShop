@@ -1,6 +1,7 @@
 <?php
 
 return [
+    // https://openhome.alipay.com/platform/appManage.htm#/apps
     'alipay' => [
         'app_id'         => '2016100100638966',
         'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzvhK5HzECJTPAzFoWpQBFZGWnqXpOz5gxiuGRW4BbpSHslccRpFxOtLIDpGORwo2bUnhtIviC/xKEgEeARiDwPyoa6nPF7PGbFO4rHHU5T3DNU1tmY2pjGRmXui4552WPQkOA3+R8RtP8J7YBZwfIsnTOAOiYlYZZYCy+p1ydNrOvwojHxwZFrha78iMfo244WLYW/BWIQIETJCDhBT1lX55xVkdiJUgSKxbUsFTu+1xao59RWAmu1eWbpFWsDB7ezDrqemj/cME668fuBX8Vn+hD+uXLMXJz9Gh1tLaa5s7Y+Jnu9lgggClVCGs/V9n5YRpYDc5kOzk3vExnLwD1wIDAQAB',
@@ -11,11 +12,11 @@ return [
     ],
 
     'wechat' => [
-        'app_id'      => '',
-        'mch_id'      => '',
-        'key'         => '',
-        'cert_client' => '',
-        'cert_key'    => '',
+        'app_id'      => '微信公众号appid', // 进入https://mp.weixin.qq.com，登录微信公众号可查看
+        'mch_id'      => '微信支付商户号', // 进入https://pay.weixin.qq.com，登录商户账号可查看
+        'key'         => '微信支付API密钥', // 进入https://pay.weixin.qq.com，登录商户账号可查看
+        'cert_client' => resource_path('wechat_pay/apiclient_cert.pem'), // 进入https://pay.weixin.qq.com，登录商户账号，下载API证书文件
+        'cert_key'    => resource_path('wechat_pay/apiclient_key.pem'), // 进入https://pay.weixin.qq.com，登录商户账号，下载API证书文件
         'log'         => [
             'file' => storage_path('logs/wechat_pay.log'),
         ],

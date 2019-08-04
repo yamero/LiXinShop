@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
 
+        // 注册支付宝支付
         $this->app->singleton('alipay', function () {
             $config = config('pay.alipay');
             $config['notify_url'] = route('payment.alipay.notify');
@@ -35,8 +36,10 @@ class AppServiceProvider extends ServiceProvider
             return Pay::alipay($config);
         });
 
+        // 注册微信支付
         $this->app->singleton('wechat_pay', function () {
             $config = config('pay.wechat');
+            $config['notify_url'] = route('payment.wechat.notify');
             if (app()->environment() !== 'production') {
                 $config['log']['level'] = Logger::DEBUG;
             } else {
