@@ -2,27 +2,23 @@
 
 namespace App\Admin\Controllers;
 
+use App\Exceptions\InvalidRequestException;
 use App\Models\Order;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
-use Encore\Admin\Show;
-use function foo\func;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class OrdersController extends AdminController
 {
-    /**
-     * Title for current resource.
-     *
-     * @var string
-     */
+    use ValidatesRequests;
+
     protected $title = '订单管理';
 
-    /**
-     * Make a grid builder.
-     *
-     * @return Grid
+    /*
+     * 订单列表
      */
     protected function grid()
     {
@@ -31,11 +27,10 @@ class OrdersController extends AdminController
         $grid->column('id', 'Id');
         $grid->column('no', '订单号');
         $grid->column('user.name', '下单人');
-        //$grid->column('address', '收货地址');
         $grid->column('total_amount', '订单金额')->sortable();
         $grid->column('paid_at', '付款时间')->display(function ($paid_at) {
             return $paid_at ? $paid_at : '未付款';
-        });
+        })->sortable();
         $grid->column('ship_status', '物流状态')->display(function ($ship_status) {
             return Order::$shipStatusMap[$ship_status] ?? '未知';
         });
@@ -43,16 +38,11 @@ class OrdersController extends AdminController
             return Order::$refundStatusMap[$refund_status] ?? '未知';
         });
         $grid->column('payment_method', '付款方式');
+        $grid->column('closed', '是否关闭')->display(function ($closed) {
+            return $closed ? '已关闭' : '正常';
+        });
         $grid->column('remark', '备注');
-        //$grid->column('payment_no', '付款单号');
-
-        //$grid->column('refund_no', __('退款单号'));
-        //$grid->column('closed', __('订单是否关闭'));
-        //$grid->column('reviewed', __('是否已评价'));
-        //$grid->column('ship_data', __('Ship data'));
-        //$grid->column('extra', __('Extra'));
         $grid->column('created_at', __('下单时间'));
-        //$grid->column('updated_at', __('更新时间'));
 
         $grid->disableCreateButton();
         $grid->actions(function ($actions) {
@@ -62,9 +52,44 @@ class OrdersController extends AdminController
         return $grid;
     }
 
+    /*
+     * 订单详情
+     */
     public function show($id, Content $content)
     {
         return $content->header('订单详情')->view('admin.orders.show', ['order' => Order::findOrFail($id)]);
+    }
+
+    /*
+     * 发货
+     */
+    public function ship(Order $order, Request $request)
+    {
+        // 判断当前订单是否已支付
+        if (!$order->paid_at) {
+            throw new InvalidRequestException('该订单未付款');
+        }
+
+        // 判断当前订单发货状态是否为未发货
+        if ($order->ship_status !== Order::SHIP_STATUS_PENDING) {
+            throw new InvalidRequestException('该订单已发货');
+        }
+
+        $data = $this->validate($request, [
+            'express_company' => ['required'],
+            'express_no'      => ['required'],
+        ], [], [
+            'express_company' => '物流公司',
+            'express_no'      => '物流单号',
+        ]);
+        // 将订单发货状态改为已发货，并存入物流信息
+        $order->update([
+            'ship_status' => Order::SHIP_STATUS_DELIVERED,
+            'ship_data'   => $data
+        ]);
+
+        // 返回上一页
+        return redirect()->back();
     }
 
     /**

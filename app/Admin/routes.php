@@ -18,6 +18,6 @@ Route::group([
 
     $router->resource('orders', OrdersController::class);
 
-    //$router->get('ceshi/{order}', 'OrdersController@show')->name('admin.orders.show');
+    $router->post('orders/{order}/ship', 'OrdersController@ship')->name('admin.orders.ship');
 
 });
