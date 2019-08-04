@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidRequestException;
+use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -55,14 +56,25 @@ class ProductsController extends Controller
             throw new InvalidRequestException('抱歉，商品未上架，暂时无法购买');
         }
 
+        // 当前商品是否被收藏
         $favorited = false;
         if ($user = $request->user()) {
             $favorited = boolval($user->favoriteProducts()->find($product->id));
         }
 
+        // 商品评价
+        $reviews = OrderItem::query()
+            ->with(['order.user', 'productSku']) // 预先加载关联关系
+            ->where('product_id', $product->id)
+            ->whereNotNull('reviewed_at') // 筛选出已评价的
+            ->orderBy('reviewed_at', 'desc') // 按评价时间倒序
+            ->limit(10) // 取出 10 条
+            ->get();
+
         return view('products.show', [
             'product' => $product,
-            'favorited' => $favorited
+            'favorited' => $favorited,
+            'reviews' => $reviews
         ]);
     }
 
