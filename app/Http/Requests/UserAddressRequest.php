@@ -1,4 +1,7 @@
 <?php
+/**
+ * 用户添加收货地址时对提交的数据进行验证
+ */
 
 namespace App\Http\Requests;
 

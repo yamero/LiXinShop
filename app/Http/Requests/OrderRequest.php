@@ -1,4 +1,7 @@
 <?php
+/**
+ * 提交订单时对提交数据进行验证
+ */
 
 namespace App\Http\Requests;
 

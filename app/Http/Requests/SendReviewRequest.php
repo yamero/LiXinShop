@@ -1,4 +1,7 @@
 <?php
+/**
+ * 订单评价时对提交的数据进行验证
+ */
 
 namespace App\Http\Requests;
 

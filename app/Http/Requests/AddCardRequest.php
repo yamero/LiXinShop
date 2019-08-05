@@ -1,4 +1,7 @@
 <?php
+/**
+ * 商品加入购物车时提交数据验证
+ */
 
 namespace App\Http\Requests;
 
